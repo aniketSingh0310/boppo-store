@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 import { useDispatch, useSelector } from "react-redux";
 import { add } from "../store/cartSlice";
 import { getProducts } from "../store/productSlice";
@@ -23,37 +21,31 @@ const Product = () => {
     dispatch(add(product));
   };
 
-  const cards = products.map((product) => (
-    <div className="col-md-3" style={{ marginBottom: "10px" }}>
-      <Card key={product.id} style={{ width: "18rem" }} className="h-100">
-        <div className="text-center">
-          <Card.Img
-            variant="top"
-            src={product.image}
-            style={{ width: "100px", height: "130px" }}
-          />
-        </div>
-        <Card.Body>
-          <Card.Title>{product.title}</Card.Title>
-          <Card.Text>{product.price}</Card.Text>
-        </Card.Body>
-        <Card.Footer>
-          <Button
-            variant="primary"
-            onClick={() => {
+  
+
+  const card2=products.map(product=>(
+    <div key={product.id}>
+        <div className="card">
+          <div className="">
+          <img src={product.image} width={200} height={160} alt='ProdImage'/>
+          </div>
+          <div className="card-info">
+            <p className="text-title">{product.title.slice(0,30)} </p>
+            <p className="text-body">{product.description.slice(0,60)}</p>
+          </div>
+          <div className="card-footer">
+            <span className="text-price">${product.price}</span>
+            <button className='btn-remove' onClick={() => {
               addToCart(product);
-            }}
-          >
-            Add to cart
-          </Button>
-        </Card.Footer>
-      </Card>
-    </div>
-  ));
+            }}>ADD TO CART</button>
+          </div>
+        </div>
+      </div>
+   ))
   return (
     <>
       <h1>Product Dashboard</h1>
-      <div className="row">{cards}</div>
+      <div className="cards-container">{card2}</div>
     </>
   );
 };

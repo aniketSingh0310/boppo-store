@@ -1,42 +1,82 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import { remove } from '../store/cartSlice';
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 
+import { add, remove } from "../store/cartSlice";
 
 const Cart = () => {
+  const products = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
 
-    const products= useSelector(state=>state.cart)
-    const dispatch=useDispatch();
-    
-    const removeFromCart=(id)=>{
-        dispatch(remove(id))
-    } 
+  const removeFromCart = (id) => {
+    dispatch(remove(id));
+  };
+  
+const handleQuantityChange = (productId, newQuantity) => {
+    const updatedCart = products.map((item) => {
+      if (item.id === productId) {
+        return {
+          ...item,
+          quantity: Math.max(1, Math.min(newQuantity, item.availableQuantity)),
+        };
+      }
+      return item;
+    });
 
-    const cards= products.map(product=>(
-        <div className='col-md-3' style={{marginBottom:'10px'}}>
-            <Card key={product.id} style={{ width: '18rem' }} className='h-100'>
-          <div className='text-center'><Card.Img variant="top" src={product.image} style={{width:'100px' ,height:'130px'}} /></div>
-          <Card.Body>
-            <Card.Title>{product.title}</Card.Title>
-            <Card.Text>
-              {product.price}
-            </Card.Text>
-          </Card.Body>
-          <Card.Footer>
-    
-            <Button variant="danger" onClick={()=>{removeFromCart(product.id)}}>Remove item</Button>
-          </Card.Footer>
-        </Card>
-    
+    dispatch(updatedCart(updatedCart));
+  };
+
+  const card3 = products.map((product) => (
+    <div key={product.id}>
+      <div className="cartCard">
+        <div className="cart-cont1">
+          <img src={product.image} width={100} height={100} alt="ProdImage" />
+          <div className="cart-desc">
+            <p className="cart-title">{product.title}</p>
+            <p className="cart-text">Size: 8</p>
+            <p className="cart-text">Material: Lilac</p>
+            <div className="quantity-control">
+              <button
+                className="quantity-btn"
+                onClick={() =>
+                  handleQuantityChange(product.id, product.quantity - 1)
+                }
+                disabled={product.quantity <= 1}
+              >
+                -
+              </button>
+              <span className="quantity-display">{product.quantity}</span>
+              <button
+                className="quantity-btn"
+                onClick={() =>
+                  handleQuantityChange(product.id, product.quantity + 1)
+                }
+                disabled={product.quantity >= product.availableQuantity}
+              >
+                +
+              </button>
+            </div>
+          </div>
         </div>
-       ) )
+        <div className="cart-cont2">
+          <span className="text-price">${product.price}</span>
+          <button
+            className="btn-remove"
+            onClick={() => {
+              removeFromCart(product.id);
+            }}
+            style={{ backgroundColor: "red" }}
+          >
+            Remove item
+          </button>
+        </div>
+      </div>
+    </div>
+  ));
   return (
     <div>
-        <h1>Products in your cart</h1>
-        <div className='row'>{cards}</div>
+      <h1>Products in your cart</h1>
+      <div className="cards-container3">{card3}</div>
     </div>
-  )
-}
+  );
+};
 export default Cart;
